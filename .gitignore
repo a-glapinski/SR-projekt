@@ -1,4 +1,4 @@
-[200~# Byte-compiled / optimized / DLL files
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
@@ -129,4 +129,4 @@ dmypy.json
 .pyre/
 
 # PyCharm
-.idea/[201~]]
+.idea/
