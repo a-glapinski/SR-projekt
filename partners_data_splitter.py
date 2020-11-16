@@ -28,16 +28,16 @@ class PartnersDataSplitter:
                   'product_category_6': 'O', 'product_category_7': 'O', 'product_country': 'O', 'product_id': 'O',
                   'product_title': 'O', 'partner_id': 'O', 'user_id': 'O'}
         self.raw_data_frame = pd.read_csv('criteo/CriteoSearchData', delimiter='\t', header=None,
-                                          names=header_info.split(','), dtype=dtypes)
+                                          names=header_info.split(','), dtype=dtypes, nrows=10000)
 
     def group_data_by_partners_and_dates(self):
         self.load_raw_data()
         df = self.raw_data_frame
-        # partner_groups = df.groupby['partner_id']
-        #
-        # df['date'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.date
-        # df.groupby('date')
+        df['date'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.date
         print(df)
+        partner_id_date_groups = df.groupby(['partner_id', 'date'])
+        for group in partner_id_date_groups:
+            print(group)
 
 
 if __name__ == '__main__':
