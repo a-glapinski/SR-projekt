@@ -133,3 +133,5 @@ dmypy.json
 
 # Criteo Search Data
 criteo/
+
+out/
