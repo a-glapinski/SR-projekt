@@ -41,7 +41,8 @@ class PartnersDataSplitter:
 
     def save_groups_to_pickle(self):
         for partner_id, partner_id_date_df_groups in self.splitted_data_frames.items():
-            pickle.dump(partner_id_date_df_groups, open(f'out/{partner_id}.pickle', "wb"))
+            with open(f'out/{partner_id}.pickle', "wb") as file:
+                pickle.dump(partner_id_date_df_groups, file)
 
 
 if __name__ == '__main__':
