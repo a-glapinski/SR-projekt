@@ -14,7 +14,7 @@ class PartnersDataSplitter:
         self.raw_data_frame = None
         self.splitted_data_frames = None
 
-    def load_raw_data(self):
+    def load_raw_data(self, nrows):
         header_info = "sale,sales_amount_in_euro,time_delay_for_conversion,click_timestamp,nb_clicks_1week," \
                       "product_price,product_age_group,device_type,audience_id,product_gender,product_brand," \
                       "product_category_1,product_category_2,product_category_3,product_category_4," \
@@ -28,10 +28,10 @@ class PartnersDataSplitter:
                   'product_category_6': 'O', 'product_category_7': 'O', 'product_country': 'O', 'product_id': 'O',
                   'product_title': 'O', 'partner_id': 'O', 'user_id': 'O'}
         self.raw_data_frame = pd.read_csv('criteo/CriteoSearchData', delimiter='\t', header=None,
-                                          names=header_info.split(','), dtype=dtypes, nrows=10000)
+                                          names=header_info.split(','), dtype=dtypes, nrows=nrows)
 
-    def group_data_by_partners_and_dates(self):
-        self.load_raw_data()
+    def group_data_by_partners_and_dates(self, nrows):
+        self.load_raw_data(nrows)
         df = self.raw_data_frame
         df['date'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.date
         partner_id_date_groups = df.groupby(['partner_id', 'date'])
@@ -44,5 +44,5 @@ class PartnersDataSplitter:
 
 if __name__ == '__main__':
     data_splitter = PartnersDataSplitter()
-    data_splitter.group_data_by_partners_and_dates()
+    data_splitter.group_data_by_partners_and_dates(10_000)
     data_splitter.save_groups_to_csv()
