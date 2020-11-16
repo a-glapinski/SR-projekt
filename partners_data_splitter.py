@@ -12,7 +12,7 @@ import pandas as pd
 class PartnersDataSplitter:
     def __init__(self):
         self.raw_data_frame = None
-        self.processed_data_frame = None
+        self.splitted_data_frames = None
 
     def load_raw_data(self):
         header_info = "sale,sales_amount_in_euro,time_delay_for_conversion,click_timestamp,nb_clicks_1week," \
@@ -34,12 +34,15 @@ class PartnersDataSplitter:
         self.load_raw_data()
         df = self.raw_data_frame
         df['date'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.date
-        print(df)
         partner_id_date_groups = df.groupby(['partner_id', 'date'])
-        for group in partner_id_date_groups:
-            print(group)
+        self.splitted_data_frames = partner_id_date_groups
+
+    def save_groups_to_csv(self):
+        for (partner_id, date), group_data_frame in self.splitted_data_frames:
+            group_data_frame.to_csv(f'out/{partner_id}_{date}.csv', index=False, sep='\t', encoding='utf-8')
 
 
 if __name__ == '__main__':
     data_splitter = PartnersDataSplitter()
     data_splitter.group_data_by_partners_and_dates()
+    data_splitter.save_groups_to_csv()
