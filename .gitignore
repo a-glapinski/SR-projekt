@@ -134,4 +134,7 @@ dmypy.json
 # Criteo Search Data
 criteo/
 
+# Processed data
+.csv
+.pickle
 out/

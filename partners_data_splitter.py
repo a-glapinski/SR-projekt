@@ -35,9 +35,9 @@ class PartnersDataSplitter:
         self.load_raw_data(nrows)
         df = self.raw_data_frame
         df['date'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.date
-        partner_id_date_groups = df.groupby('partner_id')
+        partner_id_groups = df.groupby('partner_id')
         self.splitted_data_frames = {partner_id: partner_data_frame.groupby('date') for partner_id, partner_data_frame
-                                     in partner_id_date_groups}
+                                     in partner_id_groups}
 
     def save_groups_to_pickle(self):
         for partner_id, partner_id_date_df_groups in self.splitted_data_frames.items():
