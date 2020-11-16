@@ -5,6 +5,7 @@
 # – posortowanie wierszy każdego z podzbiorów wg dat wyznaczonych ze znaczników czasowych
 #   (w „surowym” zbiorze są tylko znaczniki czasowe, które warto zastąpić datami),
 # – zapisanie każdego z podzbiorów w oddzielnym pliku CSV (najlepiej o nazwie zawierającej partner_id)
+import pickle
 
 import pandas as pd
 
@@ -34,15 +35,16 @@ class PartnersDataSplitter:
         self.load_raw_data(nrows)
         df = self.raw_data_frame
         df['date'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.date
-        partner_id_date_groups = df.groupby(['partner_id', 'date'])
-        self.splitted_data_frames = partner_id_date_groups
+        partner_id_date_groups = df.groupby('partner_id')
+        self.splitted_data_frames = {partner_id: partner_data_frame.groupby('date') for partner_id, partner_data_frame
+                                     in partner_id_date_groups}
 
-    def save_groups_to_csv(self):
-        for (partner_id, date), group_data_frame in self.splitted_data_frames:
-            group_data_frame.to_csv(f'out/{partner_id}_{date}.csv', index=False, sep='\t', encoding='utf-8')
+    def save_groups_to_pickle(self):
+        for partner_id, partner_id_date_df_groups in self.splitted_data_frames.items():
+            pickle.dump(partner_id_date_df_groups, open(f'out/{partner_id}.pickle', "wb"))
 
 
 if __name__ == '__main__':
     data_splitter = PartnersDataSplitter()
     data_splitter.group_data_by_partners_and_dates(10_000)
-    data_splitter.save_groups_to_csv()
+    data_splitter.save_groups_to_pickle()

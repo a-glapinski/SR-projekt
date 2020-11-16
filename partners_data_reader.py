@@ -3,7 +3,6 @@
 #   odczytem danych z pliku,
 # – metoda next_day() powinna skutkować odczytaniem z odpowiedniego pliku (jednego z utworzonych wcześniej z użyciem
 #   partner_data_splitter) danych o kolejnym dniu kampanii.
-
 from datetime import datetime
 from datetime import timedelta
 
