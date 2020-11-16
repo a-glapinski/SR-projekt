@@ -14,7 +14,7 @@ class PartnersDataSplitter:
         self.raw_data_frame = None
         self.splitted_data_frames = None
 
-    def load_raw_data(self, nrows):
+    def load_raw_data(self, nrows=None):
         header_info = "sale,sales_amount_in_euro,time_delay_for_conversion,click_timestamp,nb_clicks_1week," \
                       "product_price,product_age_group,device_type,audience_id,product_gender,product_brand," \
                       "product_category_1,product_category_2,product_category_3,product_category_4," \
@@ -30,7 +30,7 @@ class PartnersDataSplitter:
         self.raw_data_frame = pd.read_csv('criteo/CriteoSearchData', delimiter='\t', header=None,
                                           names=header_info.split(','), dtype=dtypes, nrows=nrows)
 
-    def group_data_by_partners_and_dates(self, nrows):
+    def group_data_by_partners_and_dates(self, nrows=None):
         self.load_raw_data(nrows)
         df = self.raw_data_frame
         df['date'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.date
