@@ -3,32 +3,27 @@
 #   odczytem danych z pliku,
 # – metoda next_day() powinna skutkować odczytaniem z odpowiedniego pliku (jednego z utworzonych wcześniej z użyciem
 #   partner_data_splitter) danych o kolejnym dniu kampanii.
-from datetime import datetime
+import pickle
 from datetime import timedelta
-
-import pandas as pd
 
 
 class PartnersDataReader:
     def __init__(self, partner_id, directory):
         self.partner_id = partner_id
         self.directory = directory
-        self.partner_data = pd.read_csv(f'{self.directory}/{self.partner_id}.csv', delimiter='\t').groupby('date')
-        self.dates = [datetime.strptime(date, '%Y-%m-%d') for date, _ in self.partner_data]
-        self.current_date = None
+        self.partner_data = pickle.load(open(f'{self.directory}/{partner_id}.pickle', "rb"))
+        self.dates = [date for date, _ in self.partner_data]
+        self.__current_date = self.dates[0] - timedelta(days=1)
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        if self.current_date is None:
-            self.current_date = self.dates[0]
-        else:
-            next_day = self.current_date + timedelta(days=1)
-            if next_day > self.dates[-1]:
-                raise StopIteration
-            self.current_date = next_day
-        return self.partner_data.get_group(self.current_date.strftime('%Y-%m-%d'))
+        next_day = self.__current_date + timedelta(days=1)
+        if next_day > self.dates[-1]:
+            raise StopIteration
+        self.__current_date = next_day
+        return self.partner_data.get_group(self.__current_date)
 
 
 if __name__ == '__main__':
