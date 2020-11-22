@@ -11,7 +11,7 @@ class PartnersDataReader:
     def __init__(self, partner_id, directory):
         self.partner_id = partner_id
         self.directory = directory
-        with open(f'{self.directory}/{partner_id}.pickle', "rb") as file:
+        with open(f'{self.directory}/{self.partner_id}.pickle', "rb") as file:
             self.partner_data = pickle.load(file)
         self.dates = [date for date, _ in self.partner_data]
         self.__current_date = self.dates[0] - timedelta(days=1)
