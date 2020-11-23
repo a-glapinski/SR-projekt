@@ -20,12 +20,11 @@ class PartnersDataReader:
         return self
 
     def __next__(self):
-        if self.next_date <= self.dates[-1]:
-            date = self.next_date
-            self.next_date += timedelta(days=1)
-            return self.partner_data.get_group(date)
-        else:
+        if self.next_date > self.dates[-1]:
             raise StopIteration
+        date = self.next_date
+        self.next_date += timedelta(days=1)
+        return self.partner_data.get_group(date)
 
 
 if __name__ == '__main__':
