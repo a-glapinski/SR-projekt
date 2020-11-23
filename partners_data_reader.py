@@ -14,20 +14,18 @@ class PartnersDataReader:
         with open(f'{self.directory}/{self.partner_id}.pickle', "rb") as file:
             self.partner_data = pickle.load(file)
         self.dates = [date for date, _ in self.partner_data]
-        self.__current_date = self.dates[0] - timedelta(days=1)
+        self.next_date = self.dates[0]
 
     def __iter__(self):
         return self
 
     def __next__(self):
-        next_date = self.get_next_date()
-        if next_date > self.dates[-1]:
+        if self.next_date <= self.dates[-1]:
+            date = self.next_date
+            self.next_date += timedelta(days=1)
+            return self.partner_data.get_group(date)
+        else:
             raise StopIteration
-        self.__current_date = next_date
-        return self.partner_data.get_group(self.__current_date)
-
-    def get_next_date(self):
-        return self.__current_date + timedelta(days=1)
 
 
 if __name__ == '__main__':

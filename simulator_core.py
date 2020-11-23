@@ -29,12 +29,13 @@ class SimulatorCore:
         next_day_data = {}
         for data_reader in self.partner_data_readers:
             partner_id = data_reader.partner_id
-            if self.next_date == data_reader.get_next_date():
+            if self.next_date == data_reader.next_date:
                 next_day_data[partner_id] = data_reader.__next__()
             else:
                 next_day_data[partner_id] = None
+        date = self.next_date
         self.next_date += timedelta(days=1)
-        return next_day_data
+        return date, next_day_data
 
 
 if __name__ == '__main__':
