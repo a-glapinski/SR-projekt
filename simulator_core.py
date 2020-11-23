@@ -26,6 +26,8 @@ class SimulatorCore:
         self.next_date = self.dates[0]
 
     def next_day(self):
+        if self.next_date > self.dates[-1]:
+            raise Exception('Next date exceeds last date!')
         next_day_data = {}
         for data_reader in self.partner_data_readers:
             partner_id = data_reader.partner_id
@@ -40,6 +42,7 @@ class SimulatorCore:
 
 if __name__ == '__main__':
     simulator_core = SimulatorCore(['743B1EE3A39E06D855A72B3B66D501D0', '2AAA4123BE41F050F159BD574800464F'])
-    for i in range(10):
+    print(simulator_core.dates)
+    for i in range(1000):
         data = simulator_core.next_day()
         print(data)
