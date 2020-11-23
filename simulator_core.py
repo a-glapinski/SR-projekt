@@ -17,9 +17,10 @@ from per_partner_simulator import PerPartnerSimulator
 
 
 class SimulatorCore:
-    def __init__(self, partner_ids):
+    def __init__(self, data_directory, partner_ids):
+        self.data_directory = data_directory
         self.simulation_partner_ids = partner_ids
-        self.partner_data_readers = [PartnersDataReader(partner_id, 'out') for partner_id in
+        self.partner_data_readers = [PartnersDataReader(partner_id, self.data_directory) for partner_id in
                                      self.simulation_partner_ids]
         self.per_partner_simulators = [PerPartnerSimulator(partner_id) for partner_id in self.simulation_partner_ids]
         self.dates = SortedSet(reduce(list.__add__, [data_reader.dates for data_reader in self.partner_data_readers]))
@@ -44,7 +45,7 @@ class SimulatorCore:
 
 
 if __name__ == '__main__':
-    simulator_core = SimulatorCore(['743B1EE3A39E06D855A72B3B66D501D0', '2AAA4123BE41F050F159BD574800464F'])
+    simulator_core = SimulatorCore('out', ['743B1EE3A39E06D855A72B3B66D501D0', '2AAA4123BE41F050F159BD574800464F'])
     print(simulator_core.dates)
     for i in range(30):
         data = simulator_core.next_day()
