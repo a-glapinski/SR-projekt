@@ -32,7 +32,10 @@ class SimulatorCore:
         for data_reader in self.partner_data_readers:
             partner_id = data_reader.partner_id
             if self.next_date == data_reader.next_date:
-                next_day_data[partner_id] = data_reader.__next__()
+                try:
+                    next_day_data[partner_id] = data_reader.__next__()
+                except StopIteration:
+                    next_day_data[partner_id] = None
             else:
                 next_day_data[partner_id] = None
         date = self.next_date
@@ -43,6 +46,6 @@ class SimulatorCore:
 if __name__ == '__main__':
     simulator_core = SimulatorCore(['743B1EE3A39E06D855A72B3B66D501D0', '2AAA4123BE41F050F159BD574800464F'])
     print(simulator_core.dates)
-    for i in range(1000):
+    for i in range(30):
         data = simulator_core.next_day()
         print(data)
