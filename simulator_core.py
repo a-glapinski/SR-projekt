@@ -30,11 +30,12 @@ class SimulatorCore:
         if self.next_date > self.dates[-1]:
             raise Exception('Next date exceeds last date!')
         next_day_data = {}
-        for data_reader in self.partner_data_readers:
+        for data_reader, simulator in zip(self.partner_data_readers, self.per_partner_simulators):
             partner_id = data_reader.partner_id
             if self.next_date == data_reader.next_date:
                 try:
                     next_day_data[partner_id] = data_reader.__next__()
+                    simulator.next_day(next_day_data[partner_id])
                 except StopIteration:
                     next_day_data[partner_id] = None
             else:
