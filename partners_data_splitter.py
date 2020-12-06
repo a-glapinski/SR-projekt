@@ -46,6 +46,7 @@ class PartnersDataSplitter:
 
 
 if __name__ == '__main__':
+    # TODO Obliczenie kosztów kliknięcia
     data_splitter = PartnersDataSplitter()
     data_splitter.group_data_by_partners_and_dates(10_000)
     data_splitter.save_groups_to_pickle()

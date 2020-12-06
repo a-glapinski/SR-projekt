@@ -34,8 +34,8 @@ class SimulatorCore:
             partner_id = data_reader.partner_id
             if self.next_date == data_reader.next_date:
                 try:
-                    next_day_data[partner_id] = data_reader.__next__()
                     simulator.next_day(next_day_data[partner_id])
+                    next_day_data[partner_id] = data_reader.__next__()
                 except StopIteration:
                     next_day_data[partner_id] = None
             else:
