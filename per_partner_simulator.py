@@ -21,7 +21,8 @@ class PerPartnerSimulator:
 
     def __calculate_per_day_profit(self, one_day_partner_data_only_excluded,
                                    one_day_partner_data_without_excluded):
-        if self.previous_day_excluded_products:
+        if not self.previous_day_excluded_products:
+            self.previous_day_excluded_products = self.optimizer.next_day(one_day_partner_data_without_excluded)
             return PerDayProfit()
 
         click_savings_for_each_product = []

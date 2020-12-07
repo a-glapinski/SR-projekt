@@ -22,7 +22,8 @@ class SimulatorCore:
         self.simulation_partner_ids = partner_ids
         self.partner_data_readers = [PartnersDataReader(partner_id, self.data_directory) for partner_id in
                                      self.simulation_partner_ids]
-        self.per_partner_simulators = [PerPartnerSimulator(partner_id) for partner_id in self.simulation_partner_ids]
+        self.per_partner_simulators = [PerPartnerSimulator(partner_id, 12.0) for partner_id in
+                                       self.simulation_partner_ids]
         self.dates = SortedSet(reduce(list.__add__, [data_reader.dates for data_reader in self.partner_data_readers]))
         self.next_date = self.dates[0]
 
@@ -34,8 +35,8 @@ class SimulatorCore:
             partner_id = data_reader.partner_id
             if self.next_date == data_reader.next_date:
                 try:
-                    simulator.next_day(next_day_data[partner_id])
-                    next_day_data[partner_id] = data_reader.__next__()
+                    data_from_reader = data_reader.__next__()
+                    next_day_data[partner_id] = simulator.next_day(data_from_reader)
                 except StopIteration:
                     next_day_data[partner_id] = None
             else:
