@@ -11,11 +11,13 @@ import pandas as pd
 
 
 class PartnersDataSplitter:
-    def __init__(self):
+    def __init__(self, nrows=None):
         self.raw_data_frame = None
         self.splitted_data_frames = None
+        self.partners_avg_click_costs = None
+        self.nrows = nrows
 
-    def load_raw_data(self, nrows=None):
+    def load_raw_data(self):
         header_info = "sale,sales_amount_in_euro,time_delay_for_conversion,click_timestamp,nb_clicks_1week," \
                       "product_price,product_age_group,device_type,audience_id,product_gender,product_brand," \
                       "product_category_1,product_category_2,product_category_3,product_category_4," \
@@ -29,24 +31,35 @@ class PartnersDataSplitter:
                   'product_category_6': 'O', 'product_category_7': 'O', 'product_country': 'O', 'product_id': 'O',
                   'product_title': 'O', 'partner_id': 'O', 'user_id': 'O'}
         self.raw_data_frame = pd.read_csv('criteo/CriteoSearchData', delimiter='\t', header=None,
-                                          names=header_info.split(','), dtype=dtypes, nrows=nrows)
+                                          names=header_info.split(','), dtype=dtypes, nrows=self.nrows)
 
-    def group_data_by_partners_and_dates(self, nrows=None):
-        self.load_raw_data(nrows)
+    def group_data_by_partners_and_dates(self):
+        self.load_raw_data()
         df = self.raw_data_frame
+
+        df['sales_amount_in_euro'] = df['sales_amount_in_euro'].replace(-1.0, pd.NA)
         df['date'] = pd.to_datetime(df['click_timestamp'], unit='s').dt.date
+
         partner_id_groups = df.groupby('partner_id')
+
+        self.__calculate_partners_avg_click_costs(partner_id_groups)
         self.splitted_data_frames = {partner_id: partner_data_frame.groupby('date') for partner_id, partner_data_frame
                                      in partner_id_groups}
 
     def save_groups_to_pickle(self):
         for partner_id, partner_id_date_df_groups in self.splitted_data_frames.items():
             with open(f'out/{partner_id}.pickle', "wb") as file:
-                pickle.dump(partner_id_date_df_groups, file)
+                pair = (partner_id_date_df_groups, self.partners_avg_click_costs[partner_id])
+                pickle.dump(pair, file)
+
+    def __calculate_partners_avg_click_costs(self, partner_id_groups):
+        total_partners_clicks = partner_id_groups.size()
+        total_partners_sales = partner_id_groups['sales_amount_in_euro'].sum().apply(
+            lambda total_sales: total_sales * 0.12)
+        self.partners_avg_click_costs = total_partners_sales / total_partners_clicks
 
 
 if __name__ == '__main__':
-    # TODO Obliczenie kosztów kliknięcia
     data_splitter = PartnersDataSplitter()
-    data_splitter.group_data_by_partners_and_dates(10_000)
+    data_splitter.group_data_by_partners_and_dates()
     data_splitter.save_groups_to_pickle()
