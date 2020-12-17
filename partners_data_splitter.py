@@ -11,11 +11,12 @@ import pandas as pd
 
 
 class PartnersDataSplitter:
-    def __init__(self, nrows=None):
+    def __init__(self, nrows=None, outdir='out'):
         self.raw_data_frame = None
         self.splitted_data_frames = None
         self.partners_avg_click_costs = None
         self.nrows = nrows
+        self.outdir = outdir
 
     def load_raw_data(self):
         header_info = "sale,sales_amount_in_euro,time_delay_for_conversion,click_timestamp,nb_clicks_1week," \
@@ -48,15 +49,15 @@ class PartnersDataSplitter:
 
     def save_groups_to_pickle(self):
         for partner_id, partner_id_date_df_groups in self.splitted_data_frames.items():
-            with open(f'out/{partner_id}.pickle', "wb") as file:
+            with open(f'{self.outdir}/{partner_id}.pickle', "wb") as file:
                 pair = (partner_id_date_df_groups, self.partners_avg_click_costs[partner_id])
                 pickle.dump(pair, file)
 
     def __calculate_partners_avg_click_costs(self, partner_id_groups):
-        total_partners_clicks = partner_id_groups.size()
+        total_partners_clicks_count = partner_id_groups.size()
         total_partners_sales = partner_id_groups['sales_amount_in_euro'].sum().apply(
             lambda total_sales: total_sales * 0.12)
-        self.partners_avg_click_costs = total_partners_sales / total_partners_clicks
+        self.partners_avg_click_costs = total_partners_sales / total_partners_clicks_count
 
 
 if __name__ == '__main__':
