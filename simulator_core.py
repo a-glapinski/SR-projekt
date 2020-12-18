@@ -1,12 +1,3 @@
-# Należy przygotować simulator_core, której
-# – konstruktor powinien mieć w swych parametrach konfigurację podzbioru
-#   kampanii/partnerów (podzbiór wartości partner_id) objętych daną symulacją i konfigurację podzbióru,
-#   kampanii/partnerów (podzbiór wartości partner_id) objętych odczytem danych jako listę partners_to_read_data_from
-#   instancji obiektów klasy PLO_partner_data_reader,
-# – konstruktor powinien tworzyć listę instancji klasy per_partner_simulator – dla każdej kampanii (partnera)
-#   objętej daną symulacją,
-# – metoda next_day() powinna skutkować odczytaniem z partners_to_read_data_from danych
-#   o kolejnym dniu równolegle symulowanych kampanii.
 from datetime import timedelta
 from functools import reduce
 

@@ -1,10 +1,3 @@
-# Przygotować – z użyciem Pandas (opcja rekomendowana, ale w przypadku niektórych komputerów być może zbyt „wymagająca”
-# pod względem objętości RAM) i/lub Dask i/lub Koalas-wstępną implementację tzw. skryptu partners_data_spliter.py
-# realizującego następujące funkcje:
-# – podział kompletnego „surowego” zbioru CPS na podzbiory (grupy) dla poszczególnych kampanii/partnerów,
-# – posortowanie wierszy każdego z podzbiorów wg dat wyznaczonych ze znaczników czasowych
-#   (w „surowym” zbiorze są tylko znaczniki czasowe, które warto zastąpić datami),
-# – zapisanie każdego z podzbiorów w oddzielnym pliku CSV (najlepiej o nazwie zawierającej partner_id)
 import pickle
 
 import pandas as pd
