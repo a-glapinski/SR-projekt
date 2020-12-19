@@ -2,6 +2,8 @@ import dataclasses
 import json
 from dataclasses import dataclass
 
+from sortedcontainers import SortedSet
+
 from product_list_optimizer import ProductListOptimizer
 
 
@@ -14,7 +16,10 @@ class PerPartnerSimulator:
 
     def next_day(self, one_day_partner_data):
         if one_day_partner_data is None:
-            return PerDayProfitGainFactors()
+            return PerDayProfitGainFactors(), \
+                   PerDayProductsData(products_seen_so_far=list(self.optimizer.products_seen_so_far),
+                                      products_to_exclude=self.previous_day_excluded_products,
+                                      products_actually_excluded=[])
 
         one_day_partner_data_only_excluded = one_day_partner_data.loc[
             one_day_partner_data['product_id'].isin(self.previous_day_excluded_products)]
@@ -23,8 +28,14 @@ class PerPartnerSimulator:
 
         per_day_profit_gain_factors = self.__calculate_per_day_profit_gain_factors(one_day_partner_data_only_excluded)
 
+        actually_excluded_products = SortedSet(one_day_partner_data_only_excluded['product_id'])
+        per_day_products_data = PerDayProductsData(
+            products_seen_so_far=list(self.optimizer.products_seen_so_far),
+            products_to_exclude=self.previous_day_excluded_products,
+            products_actually_excluded=list(actually_excluded_products))
+
         self.previous_day_excluded_products = self.optimizer.next_day(one_day_partner_data_without_excluded)
-        return per_day_profit_gain_factors
+        return per_day_profit_gain_factors, per_day_products_data
 
     def __calculate_per_day_profit_gain_factors(self, one_day_partner_data_only_excluded):
         total_clicks_savings = 0.0
@@ -67,3 +78,18 @@ class PerDayProfitGainFactors:
 
     def to_json(self):
         return json.dumps(dataclasses.asdict(self))
+
+
+@dataclass
+class PerDayProductsData:
+    products_seen_so_far: list
+    products_to_exclude: list
+    products_actually_excluded: list
+
+    def to_dict_with_date(self, date):
+        return {
+            'day': date.strftime('%Y-%m-%d'),
+            'productsSeenSoFar': self.products_seen_so_far,
+            'productsToExclude': self.products_to_exclude,
+            'productsActuallyExcluded': self.products_actually_excluded
+        }
