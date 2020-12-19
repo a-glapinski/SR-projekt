@@ -33,12 +33,3 @@ class SimulatorCore:
         date = self.next_date
         self.next_date += timedelta(days=1)
         return date, next_day_partners_data
-
-
-# TODO better plotting mechanism
-# def plot(per_day_profit_gains):
-#     plt.plot(range(1, len(per_day_profit_gains) + 1), per_day_profit_gains)
-#     plt.xlabel('Days of simulation')
-#     plt.ylabel('Profit gain')
-#     plt.grid()
-#     plt.show()

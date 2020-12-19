@@ -33,4 +33,10 @@ if __name__ == '__main__':
     partners = ['C0F515F0A2D0A5D9F854008BA76EB537', '04A66CE7327C6E21493DA6F3B9AACC75']
     simulation_executor = SimulationExecutor(partners, 'out', 90, 'logs')
     simulation_executor.execute_simulation()
-    print()
+
+# def plot(per_day_profit_gains):
+#     plt.plot(range(1, len(per_day_profit_gains) + 1), per_day_profit_gains)
+#     plt.xlabel('Days of simulation')
+#     plt.ylabel('Profit gain')
+#     plt.grid()
+#     plt.show()

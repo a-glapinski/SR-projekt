@@ -1,8 +1,3 @@
-# Należy przygotować klasę partner_data_reader (może mieć postać iteratora Python), której
-# – konstruktor powinien mieć w swych parametrach identyfikator kampanii/partnera/podzbioru (partner_id) objętego
-#   odczytem danych z pliku,
-# – metoda next_day() powinna skutkować odczytaniem z odpowiedniego pliku (jednego z utworzonych wcześniej z użyciem
-#   partner_data_splitter) danych o kolejnym dniu kampanii.
 import pickle
 from datetime import timedelta
 
