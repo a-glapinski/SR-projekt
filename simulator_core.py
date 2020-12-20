@@ -22,12 +22,11 @@ class SimulatorCore:
         next_day_partners_data = {}
         for data_reader, simulator in zip(self.partner_data_readers, self.per_partner_simulators):
             partner_id = data_reader.partner_id
+            if self.next_date < data_reader.dates[0] or self.next_date > data_reader.dates[-1]:
+                continue
             if self.next_date == data_reader.next_date:
-                try:
-                    data_from_reader = data_reader.__next__()
-                    next_day_partners_data[partner_id] = simulator.next_day(one_day_partner_data=data_from_reader)
-                except StopIteration:
-                    next_day_partners_data[partner_id] = simulator.next_day(one_day_partner_data=None)
+                data_from_reader = data_reader.__next__()
+                next_day_partners_data[partner_id] = simulator.next_day(one_day_partner_data=data_from_reader)
             else:
                 next_day_partners_data[partner_id] = simulator.next_day(one_day_partner_data=None)
         date = self.next_date

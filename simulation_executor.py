@@ -14,7 +14,7 @@ class SimulationExecutor:
 
     def execute_simulation(self):
         all_days_simulation_data = {}
-        for i in range(self.number_of_days):
+        for _ in range(self.number_of_days):
             date, one_day_simulation_data = self.simulator_core.next_day()
             all_days_simulation_data[date] = one_day_simulation_data
 
