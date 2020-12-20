@@ -1,16 +1,20 @@
 import json
 from collections import defaultdict
 
+import yaml
+
 from simulator_core import SimulatorCore
 
 
 class SimulationExecutor:
-    def __init__(self, partner_ids, partners_data_directory, number_of_days, logs_directory):
-        self.partner_ids = partner_ids
-        self.data_directory = partners_data_directory
-        self.number_of_days = number_of_days
-        self.logs_directory = logs_directory
-        self.simulator_core = SimulatorCore(self.partner_ids, self.data_directory)
+    def __init__(self, config):
+        self.data_directory = config['simulation']['partners_data_input_directory']
+        self.logs_directory = config['simulation']['partners_logs_output_directory']
+        self.partner_ids = config['simulation']['partners_to_involve_in_simulation']
+        self.number_of_days = config['simulation']['number_of_simulation_steps']
+        self.simulator_core = SimulatorCore(self.partner_ids, self.data_directory,
+                                            npm_in_percents=config['simulation']['npm_in_percents'],
+                                            optimizer_config=config['simulation']['optimizer'])
 
     def execute_simulation(self):
         all_days_simulation_data = {}
@@ -30,8 +34,9 @@ class SimulationExecutor:
 
 
 if __name__ == '__main__':
-    partners = ['C0F515F0A2D0A5D9F854008BA76EB537', '04A66CE7327C6E21493DA6F3B9AACC75']
-    simulation_executor = SimulationExecutor(partners, 'out', 90, 'logs')
+    with open('config.yaml', 'r') as config_file:
+        yaml_config = yaml.safe_load(config_file)
+    simulation_executor = SimulationExecutor(yaml_config)
     simulation_executor.execute_simulation()
 
 # def plot(per_day_profit_gains):

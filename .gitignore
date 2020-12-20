@@ -138,3 +138,4 @@ criteo/
 .csv
 .pickle
 out/
+logs/
