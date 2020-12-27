@@ -1,5 +1,3 @@
-import dataclasses
-import json
 from dataclasses import dataclass
 
 from sortedcontainers import SortedSet
@@ -56,8 +54,7 @@ class PerPartnerSimulator:
             excluded_product_sale_losses = excluded_product_total_sales
             total_sale_losses += excluded_product_sale_losses
 
-            excluded_product_profit_losses = \
-                excluded_product_total_sales - excluded_product_total_clicks_count * self.partner_avg_click_cost
+            excluded_product_profit_losses = excluded_product_total_sales * self.npm
             total_profit_losses += excluded_product_profit_losses
 
             excluded_product_net_profit_gain = \
@@ -78,8 +75,14 @@ class PerDayProfitGainFactors:
     profit_losses: float = 0.0
     profit_gain: float = 0.0
 
-    def to_json(self):
-        return json.dumps(dataclasses.asdict(self))
+    def to_dict_with_date(self, date):
+        return {
+            'day': date.strftime('%Y-%m-%d'),
+            'clicksSavings': self.clicks_savings,
+            'saleLosses': self.sale_losses,
+            'profitLosses': self.profit_losses,
+            'profitGain': self.profit_gain
+        }
 
 
 @dataclass
