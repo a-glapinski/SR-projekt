@@ -4,11 +4,12 @@ import pandas as pd
 
 
 class PartnersDataSplitter:
-    def __init__(self, click_cost_ratio, nrows=None, outdir='out'):
+    def __init__(self, click_cost_ratio, filepath, nrows=None, outdir='out'):
         self.raw_data_frame = None
         self.splitted_data_frames = None
         self.partners_avg_click_costs = None
         self.click_cost_ratio = click_cost_ratio
+        self.filepath = filepath
         self.nrows = nrows
         self.outdir = outdir
 
@@ -25,7 +26,7 @@ class PartnersDataSplitter:
                   'product_category_3': 'O', 'product_category_4': 'O', 'product_category_5': 'O',
                   'product_category_6': 'O', 'product_category_7': 'O', 'product_country': 'O', 'product_id': 'O',
                   'product_title': 'O', 'partner_id': 'O', 'user_id': 'O'}
-        self.raw_data_frame = pd.read_csv('criteo/CriteoSearchData', delimiter='\t', header=None,
+        self.raw_data_frame = pd.read_csv(self.filepath, delimiter='\t', header=None,
                                           names=header_info.split(','), dtype=dtypes, nrows=self.nrows)
 
     def group_data_by_partners_and_dates(self):
@@ -55,6 +56,6 @@ class PartnersDataSplitter:
 
 
 if __name__ == '__main__':
-    data_splitter = PartnersDataSplitter(click_cost_ratio=0.12)
+    data_splitter = PartnersDataSplitter(click_cost_ratio=0.12, filepath='criteo/CriteoSearchData')
     data_splitter.group_data_by_partners_and_dates()
     data_splitter.save_groups_to_pickle()
