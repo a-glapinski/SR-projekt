@@ -4,6 +4,7 @@ simulation:
   partners_to_involve_in_simulation: [ 'C0F515F0A2D0A5D9F854008BA76EB537', '04A66CE7327C6E21493DA6F3B9AACC75' ]
   number_of_simulation_steps: 90
   npm_in_percents: 10
+  click_cost_ratio: 0.12
   optimizer:
     how_many_ratio: 20
     pseudorandom_seed: 12

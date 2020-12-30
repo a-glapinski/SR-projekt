@@ -8,14 +8,14 @@ from per_partner_simulator import PerPartnerSimulator
 
 
 class SimulatorCore:
-    def __init__(self, partner_ids, data_directory, npm_in_percents, optimizer_config):
+    def __init__(self, partner_ids, data_directory, npm_in_percents, click_cost_ratio, optimizer_config):
         self.simulation_partner_ids = partner_ids
         self.data_directory = data_directory
         self.partner_data_readers = [PartnerDataReader(partner_id, self.data_directory) for partner_id in
                                      self.simulation_partner_ids]
         self.per_partner_simulators = \
             [PerPartnerSimulator(reader.partner_id, reader.partner_avg_click_click_cost, npm_in_percents,
-                                 optimizer_config) for reader in self.partner_data_readers]
+                                 click_cost_ratio, optimizer_config) for reader in self.partner_data_readers]
         self.dates = SortedSet(reduce(list.__add__, [reader.dates for reader in self.partner_data_readers]))
         self.next_date = self.dates[0]
 

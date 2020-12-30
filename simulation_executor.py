@@ -14,6 +14,7 @@ class SimulationExecutor:
         self.number_of_days = config['simulation']['number_of_simulation_steps']
         self.simulator_core = SimulatorCore(self.partner_ids, self.data_directory,
                                             npm_in_percents=config['simulation']['npm_in_percents'],
+                                            click_cost_ratio=config['simulation']['click_cost_ratio'],
                                             optimizer_config=config['simulation']['optimizer'])
         self.all_days_simulation_data = {}
 

@@ -4,10 +4,11 @@ import pandas as pd
 
 
 class PartnersDataSplitter:
-    def __init__(self, nrows=None, outdir='out'):
+    def __init__(self, click_cost_ratio, nrows=None, outdir='out'):
         self.raw_data_frame = None
         self.splitted_data_frames = None
         self.partners_avg_click_costs = None
+        self.click_cost_ratio = click_cost_ratio
         self.nrows = nrows
         self.outdir = outdir
 
@@ -49,11 +50,11 @@ class PartnersDataSplitter:
     def __calculate_partners_avg_click_costs(self, partner_id_groups):
         total_partners_clicks_count = partner_id_groups.size()
         total_partners_sales = partner_id_groups['sales_amount_in_euro'].sum().apply(
-            lambda total_sales: total_sales * 0.12)
+            lambda total_sales: total_sales * self.click_cost_ratio)
         self.partners_avg_click_costs = total_partners_sales / total_partners_clicks_count
 
 
 if __name__ == '__main__':
-    data_splitter = PartnersDataSplitter()
+    data_splitter = PartnersDataSplitter(click_cost_ratio=0.12)
     data_splitter.group_data_by_partners_and_dates()
     data_splitter.save_groups_to_pickle()

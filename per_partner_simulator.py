@@ -6,10 +6,11 @@ from product_list_optimizer import ProductListOptimizer
 
 
 class PerPartnerSimulator:
-    def __init__(self, partner_id, partner_avg_click_cost, npm_in_percents, optimizer_config):
+    def __init__(self, partner_id, partner_avg_click_cost, npm_in_percents, click_cost_ratio, optimizer_config):
         self.partner_id = partner_id
         self.partner_avg_click_cost = partner_avg_click_cost
         self.npm = npm_in_percents / 100
+        self.click_cost_ratio = click_cost_ratio
         self.optimizer = ProductListOptimizer(self.partner_id, partner_avg_click_cost, optimizer_config)
         self.previous_day_excluded_products = []
 
@@ -63,13 +64,13 @@ class PerPartnerSimulator:
 
             excluded_product_net_profit_gain = \
                 excluded_product_total_clicks_count * self.partner_avg_click_cost \
-                - excluded_product_total_sales * (0.12 + self.npm)
+                - excluded_product_total_sales * (self.click_cost_ratio + self.npm)
             total_net_profit_gain += excluded_product_net_profit_gain
 
         not_excluded_products_total_sales = one_day_partner_data_without_excluded['sales_amount_in_euro'].sum()
         not_excluded_products_total_clicks_count = len(one_day_partner_data_without_excluded.index)
         total_sustained_profit = \
-            not_excluded_products_total_sales * (0.12 + self.npm) \
+            not_excluded_products_total_sales * (self.click_cost_ratio + self.npm) \
             - not_excluded_products_total_clicks_count * self.partner_avg_click_cost
 
         return PerDayProfitGainFactors(clicks_savings=total_clicks_savings,
