@@ -25,7 +25,10 @@ class PerPartnerSimulator:
         one_day_partner_data_without_excluded = one_day_partner_data.loc[
             -one_day_partner_data['product_id'].isin(self.previous_day_excluded_products)]
 
-        per_day_profit_gain_factors = self.__calculate_per_day_profit_gain_factors(one_day_partner_data_only_excluded)
+        per_day_profit_gain_factors = self.__calculate_per_day_profit_gain_factors(
+            one_day_partner_data_only_excluded,
+            one_day_partner_data_without_excluded
+        )
 
         actually_excluded_products = SortedSet(one_day_partner_data_only_excluded['product_id'])
         per_day_products_data = PerDayProductsData(
@@ -36,7 +39,8 @@ class PerPartnerSimulator:
         self.previous_day_excluded_products = self.optimizer.next_day(one_day_partner_data_without_excluded)
         return per_day_profit_gain_factors, per_day_products_data
 
-    def __calculate_per_day_profit_gain_factors(self, one_day_partner_data_only_excluded):
+    def __calculate_per_day_profit_gain_factors(self, one_day_partner_data_only_excluded,
+                                                one_day_partner_data_without_excluded):
         total_clicks_savings = 0.0
         total_sale_losses = 0.0
         total_profit_losses = 0.0
@@ -62,9 +66,16 @@ class PerPartnerSimulator:
                 - excluded_product_total_sales * (0.12 + self.npm)
             total_net_profit_gain += excluded_product_net_profit_gain
 
+        not_excluded_products_total_sales = one_day_partner_data_without_excluded['sales_amount_in_euro'].sum()
+        not_excluded_products_total_clicks_count = len(one_day_partner_data_without_excluded.index)
+        total_sustained_profit = \
+            not_excluded_products_total_sales * (0.12 + self.npm) \
+            - not_excluded_products_total_clicks_count * self.partner_avg_click_cost
+
         return PerDayProfitGainFactors(clicks_savings=total_clicks_savings,
                                        sale_losses=total_sale_losses,
                                        profit_losses=total_profit_losses,
+                                       sustained_profit=total_sustained_profit,
                                        profit_gain=total_net_profit_gain)
 
 
@@ -73,6 +84,7 @@ class PerDayProfitGainFactors:
     clicks_savings: float = 0.0
     sale_losses: float = 0.0
     profit_losses: float = 0.0
+    sustained_profit: float = 0.0
     profit_gain: float = 0.0
 
     def to_dict_with_date(self, date):
@@ -81,6 +93,7 @@ class PerDayProfitGainFactors:
             'clicksSavings': self.clicks_savings,
             'saleLosses': self.sale_losses,
             'profitLosses': self.profit_losses,
+            'sustainedProfit': self.sustained_profit,
             'profitGain': self.profit_gain
         }
 
