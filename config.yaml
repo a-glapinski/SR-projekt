@@ -4,7 +4,13 @@ simulation:
   partners_to_involve_in_simulation: [ 'C0F515F0A2D0A5D9F854008BA76EB537', '04A66CE7327C6E21493DA6F3B9AACC75' ]
   number_of_simulation_steps: 90
   npm_in_percents: 10
-  click_cost_ratio: 0.12
+  click_cost_ratio: &cc_ratio 0.12
   optimizer:
     how_many_ratio: 20
     pseudorandom_seed: 12
+
+data_splitter:
+  dataset_input_filepath: 'criteo/CriteoSearchData'
+  partners_data_output_directory: 'out'
+  nrows: null # null means all rows will be read
+  click_cost_ratio: *cc_ratio
